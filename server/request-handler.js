@@ -41,14 +41,34 @@ var requestHandler = function(request, response) {
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = "text/plain";
+  headers['Content-Type'] = "application/json";
 
   //Check if type of request is 'GET'
 
-    if( request.method === 'GET' ) {
+
+
+
+    //
+     if( request.url === '/classes/messages' || request.url === '/classes/room1') {
+
+      if( request.method === 'GET' ) {
       response.writeHead(statusCode, headers);
       response.end( JSON.stringify({results: messages}) );
     }
+      if( request.method === 'POST') {
+          //on listener for data, if it hears data then
+          //anonymous function which pushes that data into the messages array
+          request.on('data', function(data) {
+            messages.push(JSON.parse(data));
+          });
+          response.writeHead(201, headers);
+          response.end( JSON.stringify({statusCode: 201}) );
+        }
+      } else {
+        response.writeHead(404, headers);
+          response.end( );
+      }
+
 
 
 

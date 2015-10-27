@@ -53,12 +53,13 @@ $(function() {
         }
       });
     },
-    fetch: function(animate) {
+    fetch: function() {
       $.ajax({
         url: app.server,
         type: 'GET',
         contentType: 'application/json',
-        data: { order: '-createdAt'},
+        //data: { order: '-createdAt'},
+        data: JSON.stringify(message),
         success: function(data) {
           console.log('chatterbox: Messages fetched');
 

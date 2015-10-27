@@ -41,11 +41,34 @@ var requestHandler = function(request, response) {
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = "application/json";
+  headers['Content-Type'] = "text/plain";
+
+  //Check if type of request is 'GET'
+
+    if( request.method === 'GET' ) {
+      response.writeHead(statusCode, headers);
+      response.end( JSON.stringify({results: messages}) );
+    }
+
+
+
+
+  /*
+    request.url for incoming url, like /log
+
+  instead of return we do response.writeHead
+  https://nodejs.org/api/http.html#http_response_writehead_statuscode_statusmessage_headers
+
+  This method must only be called once on a message and it must be called before response.end() is called.
+
+If you call response.write() or response.end() before calling this, the implicit/mutable headers
+will be calculated and call this function for you.
+
+   */
 
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
-  response.writeHead(statusCode, headers);
+  // response.writeHead(statusCode, headers);
 
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
@@ -54,10 +77,14 @@ var requestHandler = function(request, response) {
   //
   // Calling .end "flushes" the response's internal buffer, forcing
   // node to actually send all the data over to the client.
-  response.end("Hello, World!");
+
+
+ // response.end("hello world");
 };
 
 exports.requestHandler = requestHandler;
+
+var messages = [];
 
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).

@@ -13,6 +13,9 @@ this file and include it in basic-server.js so that it actually works.
 **************************************************************/
 var http = require('http');
 
+var objectId = 1;
+
+var messages = [];
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -43,30 +46,40 @@ var requestHandler = function(request, response) {
   // other than plain text, like JSON or HTML.
   headers['Content-Type'] = "application/json";
 
-  //Check if type of request is 'GET'
+  if(request.method === 'OPTIONS'){
+    response.writeHead(statusCode, headers);
+    response.end(null);
+  };
 
+//   'OPTIONS': function(request, response){
+//     utils.sendResponse(response, null);
+//   }
+// exports.sendResponse = function(response, data, statusCode){
+//   statusCode = statusCode || 200;
+//   response.writeHead(statusCode, headers);
+//   response.end(JSON.stringify(data));
+// };
 
-
-
-    //
-     if( request.url === '/classes/messages' || request.url === '/classes/room1') {
+ if( request.url === '/classes/messages' || request.url === '/classes/room1') {
 
       if( request.method === 'GET' ) {
       response.writeHead(statusCode, headers);
-      response.end( JSON.stringify({results: messages}) );
+      response.end( JSON.stringify({results: messages}));
     }
       if( request.method === 'POST') {
           //on listener for data, if it hears data then
           //anonymous function which pushes that data into the messages array
           request.on('data', function(data) {
-            messages.push(JSON.parse(data));
+            messageObject = JSON.parse(data)
+            messageObject.objectId = ++objectId;
+            messages.push(messageObject);
           });
           response.writeHead(201, headers);
           response.end( JSON.stringify({statusCode: 201}) );
         }
       } else {
         response.writeHead(404, headers);
-          response.end( );
+          response.end();
       }
 
 
@@ -104,7 +117,7 @@ will be calculated and call this function for you.
 
 exports.requestHandler = requestHandler;
 
-var messages = [];
+
 
 
 // These headers will allow Cross-Origin Resource Sharing (CORS).
